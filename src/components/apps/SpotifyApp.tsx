@@ -1088,29 +1088,22 @@ const SpotifyApp = ({ onClose, user, profile }: { onClose: () => void, user: Use
                 <div className="flex-1 min-w-0">
                    <div className="flex flex-col">
                       <Marquee text={currentTrack.title} className="font-bold text-[14px] text-white leading-tight" />
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleDevices();
-                        }}
-                        className="flex min-w-0 items-center gap-1 rounded-md pr-1 text-left hover:opacity-80 active:scale-[0.98] transition"
-                      >
-                        <Headphones size={12} className="text-[#1DB954]" />
-                        <p className="text-[12px] font-black text-[#1DB954] truncate opacity-90">{currentDeviceName}</p>
-                      </button>
+                      <p className="text-[12px] font-black text-[#1DB954] truncate opacity-90">{currentDeviceName}</p>
                    </div>
                 </div>
 
                 <div className="flex items-center gap-4 shrink-0 px-1">
-                  <div className="hidden sm:flex items-center gap-4 mr-1">
-                    <button onClick={(e) => { e.stopPropagation(); handlePrev(); }} className="text-white/60 hover:text-white transition-colors">
-                      <SkipBack size={22} fill="currentColor" strokeWidth={0} />
-                    </button>
-                    <button onClick={(e) => { e.stopPropagation(); handleNext(); }} className="text-white/60 hover:text-white transition-colors">
-                      <SkipForward size={22} fill="currentColor" strokeWidth={0} />
-                    </button>
-                  </div>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleDevices();
+                    }}
+                    className="text-[#1DB954] hover:opacity-80 active:scale-95 transition flex items-center justify-center w-10 h-10"
+                    aria-label="Csatlakozás eszközhöz"
+                  >
+                    <Headphones size={18} strokeWidth={2.5} />
+                  </button>
                   <button onClick={togglePlay} className="text-white hover:scale-110 active:scale-90 transition-transform flex items-center justify-center w-10 h-10">
                     {isPlaying ? <Pause size={28} fill="white" strokeWidth={0} /> : <Play size={28} fill="white" strokeWidth={0} className="ml-1" />}
                   </button>
