@@ -251,10 +251,34 @@ const SpotifyApp = ({ onClose, user, profile }: { onClose: () => void, user: Use
   const lyricsContainerRef = useRef<HTMLDivElement>(null);
   const isUpdatingFromFirebase = useRef(false);
   const lyricsUserScrollLockUntilMs = useRef<number>(0);
+  const playerContentScrollRef = useRef<HTMLDivElement>(null);
+  const pullStartYRef = useRef<number | null>(null);
 
   const lockLyricsAutoScroll = () => {
     // If the user scrolls the lyrics manually, don't fight them for a short window.
     lyricsUserScrollLockUntilMs.current = Date.now() + 3000;
+  };
+
+  const handlePlayerTouchStart = (e: React.TouchEvent) => {
+    pullStartYRef.current = e.touches[0]?.clientY ?? null;
+  };
+
+  const handlePlayerTouchMove = (e: React.TouchEvent) => {
+    const startY = pullStartYRef.current;
+    const currentY = e.touches[0]?.clientY;
+    if (startY == null || currentY == null) return;
+
+    const deltaY = currentY - startY;
+    if (deltaY <= 0) return; // only downward pulls
+
+    const scroller = playerContentScrollRef.current;
+    if (!scroller) return;
+
+    // If content is already at the top and the user pulls down, browsers may trigger pull-to-refresh.
+    // Prevent default so we keep the gesture inside the player (drag-to-dismiss still works).
+    if (scroller.scrollTop <= 0) {
+      e.preventDefault();
+    }
   };
 
   // Sync with Firebase
@@ -1373,7 +1397,9 @@ const SpotifyApp = ({ onClose, user, profile }: { onClose: () => void, user: Use
               onDragEnd={(e, info) => {
                 if (info.offset.y > 150) setIsPlayerExpanded(false);
               }}
-              className="fixed inset-0 z-[200] flex flex-col bg-[#121212] overflow-hidden"
+              onTouchStart={handlePlayerTouchStart}
+              onTouchMove={handlePlayerTouchMove}
+              className="fixed inset-0 z-[200] flex flex-col bg-[#121212] overflow-hidden overscroll-none"
             >
               {/* Refined Background Gradient */}
               <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
@@ -1385,7 +1411,10 @@ const SpotifyApp = ({ onClose, user, profile }: { onClose: () => void, user: Use
               </div>
 
               <div className="relative z-10 flex-1 bg-transparent text-white overflow-hidden flex flex-col">
-                <div className={`px-6 pt-6 flex flex-col flex-1 overflow-y-auto pb-40`}>
+                <div
+                  ref={playerContentScrollRef}
+                  className="px-6 pt-6 flex flex-col flex-1 overflow-y-auto pb-40 overscroll-contain"
+                >
                   {/* Header */}
                   <div className="flex items-center justify-between mb-6 shrink-0 py-2">
                     <button onClick={() => setIsPlayerExpanded(false)} className="p-2 hover:bg-white/10 rounded-full transition-colors">
