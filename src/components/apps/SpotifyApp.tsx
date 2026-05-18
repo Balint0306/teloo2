@@ -1393,8 +1393,11 @@ const SpotifyApp = ({ onClose, user, profile }: { onClose: () => void, user: Use
               transition={{ type: "spring", damping: 30, stiffness: 300, mass: 0.8 }}
               drag="y"
               dragMomentum={false}
+              dragListener={true}
               dragConstraints={{ top: 0 }}
               dragElastic={0.65}
+              dragTransition={{ bounceStiffness: 650, bounceDamping: 35, timeConstant: 100 }}
+              whileDrag={{ cursor: "grabbing" }}
               onDragEnd={(e, info) => {
                 // Make the pull-down-to-dismiss feel snappy like Spotify:
                 // close on either a moderate pull distance or a quick downward flick.
@@ -1402,7 +1405,7 @@ const SpotifyApp = ({ onClose, user, profile }: { onClose: () => void, user: Use
               }}
               onTouchStart={handlePlayerTouchStart}
               onTouchMove={handlePlayerTouchMove}
-              className="fixed inset-0 z-[200] flex flex-col bg-[#121212] overflow-hidden overscroll-none touch-none"
+              className="fixed inset-0 z-[200] flex flex-col bg-[#121212] overflow-hidden overscroll-none cursor-grab"
             >
               {/* Refined Background Gradient */}
               <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
