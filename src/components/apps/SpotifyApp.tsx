@@ -250,6 +250,12 @@ const SpotifyApp = ({ onClose, user, profile }: { onClose: () => void, user: Use
   const videoRef = useRef<HTMLVideoElement>(null);
   const lyricsContainerRef = useRef<HTMLDivElement>(null);
   const isUpdatingFromFirebase = useRef(false);
+  const lyricsUserScrollLockUntilMs = useRef<number>(0);
+
+  const lockLyricsAutoScroll = () => {
+    // If the user scrolls the lyrics manually, don't fight them for a short window.
+    lyricsUserScrollLockUntilMs.current = Date.now() + 3000;
+  };
 
   // Sync with Firebase
   useEffect(() => {
@@ -621,6 +627,30 @@ const SpotifyApp = ({ onClose, user, profile }: { onClose: () => void, user: Use
   };
 
   const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
+
+  // Auto-scroll lyrics inside the lyrics container (never scrolls the whole page)
+  useEffect(() => {
+    const container = lyricsContainerRef.current;
+    if (!container) return;
+    if (Date.now() < lyricsUserScrollLockUntilMs.current) return;
+    if (!currentTrack.lyrics || currentTrack.lyrics.length === 0) return;
+
+    const activeIndex = currentTrack.lyrics.reduce((latestIndex, lyric, lyricIndex) => (
+      currentTime >= lyric.time ? lyricIndex : latestIndex
+    ), -1);
+    const focusedIndex = activeIndex === -1 ? 0 : activeIndex;
+    const activeEl = container.querySelector(`[data-lyric-idx="${focusedIndex}"]`) as HTMLElement | null;
+    if (!activeEl) return;
+
+    // Center the active line within the scroll container.
+    const targetTop = activeEl.offsetTop - (container.clientHeight / 2) + (activeEl.clientHeight / 2);
+    const clampedTop = Math.max(0, Math.min(targetTop, container.scrollHeight - container.clientHeight));
+
+    // Avoid micro-jitter: only scroll if we're meaningfully off.
+    if (Math.abs(container.scrollTop - clampedTop) < 8) return;
+
+    container.scrollTo({ top: clampedTop, behavior: 'smooth' });
+  }, [currentTime, currentTrack]);
 
   return (
     <div className="flex-1 flex flex-col bg-black font-sans text-white overflow-hidden relative selection:bg-[#1DB954]/30">
@@ -1535,6 +1565,9 @@ const SpotifyApp = ({ onClose, user, profile }: { onClose: () => void, user: Use
                       </div>
                       <div 
                         ref={lyricsContainerRef}
+                        onWheel={lockLyricsAutoScroll}
+                        onTouchMove={lockLyricsAutoScroll}
+                        onPointerDown={lockLyricsAutoScroll}
                         className="space-y-5 max-h-[400px] overflow-y-auto no-scrollbar scroll-smooth pb-8"
                       >
                         {currentTrack.lyrics.map((line, idx) => {
@@ -1547,6 +1580,7 @@ const SpotifyApp = ({ onClose, user, profile }: { onClose: () => void, user: Use
                           return (
                             <p 
                               key={idx}
+                              data-lyric-idx={idx}
                               className={`text-[20px] font-black leading-tight tracking-tight transition-all duration-500 ${
                                 isActive
                                   ? 'lyrics-active text-white opacity-100 scale-100 drop-shadow-[0_0_14px_rgba(255,255,255,0.18)]'
