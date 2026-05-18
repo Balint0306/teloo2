@@ -253,6 +253,7 @@ const SpotifyApp = ({ onClose, user, profile }: { onClose: () => void, user: Use
   const lyricsUserScrollLockUntilMs = useRef<number>(0);
   const playerContentScrollRef = useRef<HTMLDivElement>(null);
   const pullStartYRef = useRef<number | null>(null);
+  const isDismissingPlayerRef = useRef(false);
 
   const lockLyricsAutoScroll = () => {
     // If the user scrolls the lyrics manually, don't fight them for a short window.
@@ -1398,6 +1399,16 @@ const SpotifyApp = ({ onClose, user, profile }: { onClose: () => void, user: Use
               dragElastic={0.65}
               dragTransition={{ bounceStiffness: 650, bounceDamping: 35, timeConstant: 100 }}
               whileDrag={{ cursor: "grabbing" }}
+              onDragStart={() => {
+                isDismissingPlayerRef.current = false;
+              }}
+              onDrag={(e, info) => {
+                // Mobile-friendly: as soon as the user pulls down a little, auto-dismiss with animation.
+                if (!isDismissingPlayerRef.current && info.offset.y > 10) {
+                  isDismissingPlayerRef.current = true;
+                  setIsPlayerExpanded(false);
+                }
+              }}
               onDragEnd={(e, info) => {
                 // Make the pull-down-to-dismiss feel snappy like Spotify:
                 // close on either a moderate pull distance or a quick downward flick.
