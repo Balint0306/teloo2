@@ -1,0 +1,152 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile data including settings and admin status.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "installedAppIds": { "type": "array" },
+        "settings": { "type": "object" },
+        "isAdmin": { "type": "boolean" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email"]
+    },
+    "Note": {
+      "title": "Note",
+      "description": "A private note belonging to a user.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "color": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "createdAt", "updatedAt"]
+    },
+    "CalendarEvent": {
+      "title": "CalendarEvent",
+      "description": "An event on the user's calendar.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "date": { "type": "string" },
+        "time": { "type": "string" },
+        "color": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "date", "createdAt"]
+    },
+    "ShoppingList": {
+      "title": "ShoppingList",
+      "description": "A collection of shopping items.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "createdAt"]
+    },
+    "ShoppingItem": {
+      "title": "ShoppingItem",
+      "description": "An item within a shopping list.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "amount": { "type": "string" },
+        "completed": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "completed", "createdAt"]
+    },
+    "PasswordRecord": {
+      "title": "PasswordRecord",
+      "description": "A stored password for an application or website.",
+      "type": "object",
+      "properties": {
+        "appName": { "type": "string" },
+        "email": { "type": "string" },
+        "password": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["appName", "email", "password", "createdAt"]
+    },
+    "Recipe": {
+      "title": "Recipe",
+      "description": "A cooking recipe.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "ingredients": { "type": "string" },
+        "instructions": { "type": "string" },
+        "category": { "type": "string" },
+        "image": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "ingredients", "instructions", "createdAt"]
+    },
+    "SpotifyPlayback": {
+      "title": "SpotifyPlayback",
+      "description": "Current playback state of the Spotify clone.",
+      "type": "object",
+      "properties": {
+        "trackId": { "type": "integer" },
+        "isPlaying": { "type": "boolean" },
+        "currentTime": { "type": "integer" },
+        "activeDeviceId": { "type": "string" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "SpotifyLiked": {
+      "title": "SpotifyLiked",
+      "description": "List of track IDs liked by the user.",
+      "type": "object",
+      "properties": {
+        "trackIds": { "type": "array" }
+      }
+    },
+    "SpotifyPlaylist": {
+      "title": "SpotifyPlaylist",
+      "description": "A user-created playlist in the Spotify clone.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "trackIds": { "type": "array" },
+        "pinned": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "trackIds"]
+    },
+    "SpotifyDevice": {
+      "title": "SpotifyDevice",
+      "description": "A device currently using the Spotify clone.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "type": { "type": "string" },
+        "lastActive": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "name", "type", "lastActive"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": { "schema": "User", "description": "User profile data" },
+    "/users/{userId}/notes/{noteId}": { "schema": "Note", "description": "User notes" },
+    "/users/{userId}/calendar/{eventId}": { "schema": "CalendarEvent", "description": "User calendar events" },
+    "/users/{userId}/shoppingLists/{listId}": { "schema": "ShoppingList", "description": "User shopping lists" },
+    "/users/{userId}/shoppingLists/{listId}/items/{itemId}": { "schema": "ShoppingItem", "description": "Items in a shopping list" },
+    "/users/{userId}/passwords/{passwordId}": { "schema": "PasswordRecord", "description": "Stored passwords" },
+    "/users/{userId}/recipes/{recipeId}": { "schema": "Recipe", "description": "Stored recipes" },
+    "/users/{userId}/spotify/playback": { "schema": "SpotifyPlayback", "description": "Spotify playback state" },
+    "/users/{userId}/spotify/liked": { "schema": "SpotifyLiked", "description": "Liked Spotify tracks" },
+    "/users/{userId}/spotifyPlaylists/{playlistId}": { "schema": "SpotifyPlaylist", "description": "Spotify playlists" },
+    "/users/{userId}/spotifyDevices/{deviceId}": { "schema": "SpotifyDevice", "description": "Spotify active devices" }
+  }
+}
