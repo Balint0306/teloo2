@@ -1392,14 +1392,17 @@ const SpotifyApp = ({ onClose, user, profile }: { onClose: () => void, user: Use
               exit={{ y: '100%' }}
               transition={{ type: "spring", damping: 30, stiffness: 300, mass: 0.8 }}
               drag="y"
+              dragMomentum={false}
               dragConstraints={{ top: 0 }}
-              dragElastic={0.2}
+              dragElastic={0.65}
               onDragEnd={(e, info) => {
-                if (info.offset.y > 150) setIsPlayerExpanded(false);
+                // Make the pull-down-to-dismiss feel snappy like Spotify:
+                // close on either a moderate pull distance or a quick downward flick.
+                if (info.offset.y > 85 || info.velocity.y > 650) setIsPlayerExpanded(false);
               }}
               onTouchStart={handlePlayerTouchStart}
               onTouchMove={handlePlayerTouchMove}
-              className="fixed inset-0 z-[200] flex flex-col bg-[#121212] overflow-hidden overscroll-none"
+              className="fixed inset-0 z-[200] flex flex-col bg-[#121212] overflow-hidden overscroll-none touch-none"
             >
               {/* Refined Background Gradient */}
               <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
