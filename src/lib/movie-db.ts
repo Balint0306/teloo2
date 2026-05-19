@@ -119,18 +119,18 @@ export const movieDB: Content[] = [
   },
   {
     id: '4',
-    title: 'The Gray Man',
+    title: 'Zootropolis 2',
     type: 'movie',
-    imageUrl: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=2070&auto=format&fit=crop',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/en/thumb/6/6a/Zootopia_2_%282025_film%29.jpg/250px-Zootopia_2_%282025_film%29.jpg',
     description: 'Amikor a CIA legképzettebb bérgyilkosa véletlenül sötét ügynökségi titkokat tár fel, egy pszichopata exkollégája vérdíjat tűz ki a fejére, és globális hajtóvadászatot indít ellene.',
-    year: 2022,
-    duration: '2ó 2p',
-    durationSeconds: 7320,
-    upNextTriggerSeconds: 15,
-    genres: [GENRES.ACTION, GENRES.THRILLER],
-    cast: ['Ryan Gosling', 'Chris Evans', 'Ana de Armas'],
-    trailerUrl: 'https://www.youtube.com/embed/BmllggGOBAc',
-    embedUrl: 'https://vidsrc.to/embed/movie/tt1649418'
+    year: 2025,
+    duration: '1ó 47p',
+    durationSeconds: 6472,
+    upNextTriggerSeconds: 0,
+    genres: [GENRES.ACTION , GENRES.NEW],
+    cast: ['Ginnifer Goodwin', 'Jason Bateman', 'Ke Huy Quan'],
+    trailerUrl: 'https://youtu.be/i2X99JJZmPo?si=m3EywqXmaxVs0zDY',
+    embedUrl: 'https://vkvideo.ru/video_ext.php?oid=-229871314&id=456239020&hash=d5ce43e3ac96accb&hd=3'
   },
   {
     id: '5',
